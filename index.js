@@ -1,4 +1,8 @@
-// atlas-host-os/index.js - COMPLETE BACKEND IN ONE FILE
+
+## 🔥 **UPDATED index.js with "Atla" name**
+
+```javascript
+// atla/index.js - COMPLETE BACKEND
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -10,13 +14,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/atlas-host', {
+// MongoDB Connection
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/atla-pms', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
-// USER MODEL
+// User Model
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
@@ -29,7 +33,7 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-// PROPERTY MODEL
+// Property Model
 const propertySchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   name: { type: String, required: true },
@@ -50,7 +54,7 @@ const propertySchema = new mongoose.Schema({
 
 const Property = mongoose.model('Property', propertySchema);
 
-// BOOKING MODEL
+// Booking Model
 const bookingSchema = new mongoose.Schema({
   propertyId: { type: mongoose.Schema.Types.ObjectId, ref: 'Property', required: true },
   guestName: { type: String, required: true },
@@ -71,7 +75,7 @@ const bookingSchema = new mongoose.Schema({
 
 const Booking = mongoose.model('Booking', bookingSchema);
 
-// AUTH MIDDLEWARE
+// Auth Middleware
 const auth = async (req, res, next) => {
   try {
     const token = req.header('Authorization')?.replace('Bearer ', '');
@@ -88,7 +92,7 @@ const auth = async (req, res, next) => {
   }
 };
 
-// AUTH ROUTES
+// Auth Routes
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { email, password, companyName } = req.body;
@@ -135,7 +139,7 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
-// PROPERTY ROUTES
+// Property Routes
 app.get('/api/properties', auth, async (req, res) => {
   try {
     const properties = await Property.find({ userId: req.user.id });
@@ -158,7 +162,7 @@ app.post('/api/properties', auth, async (req, res) => {
   }
 });
 
-// BOOKING ROUTES
+// Booking Routes
 app.get('/api/bookings', auth, async (req, res) => {
   try {
     const properties = await Property.find({ userId: req.user.id });
@@ -177,11 +181,9 @@ app.post('/api/bookings', auth, async (req, res) => {
   try {
     const { propertyId, guestName, guestEmail, checkIn, checkOut, totalAmount } = req.body;
     
-    // Check if property belongs to user
     const property = await Property.findOne({ _id: propertyId, userId: req.user.id });
     if (!property) return res.status(404).json({ error: 'Property not found' });
     
-    // Check availability
     const conflictingBooking = await Booking.findOne({
       propertyId,
       status: 'confirmed',
@@ -212,18 +214,18 @@ app.post('/api/bookings', auth, async (req, res) => {
   }
 });
 
-// HEALTH CHECK
+// Health Check
 app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'OK', 
-    message: 'Atlas Host OS Backend Running',
+    message: 'Atla PMS Backend Running',
     timestamp: new Date().toISOString()
   });
 });
 
-// START SERVER
+// Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`🚀 Atlas Host OS running on port ${PORT}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
+  console.log(`🏔 Atla PMS running on port ${PORT}`);
+  console.log(`📊 Health: http://localhost:${PORT}/api/health`);
 });
