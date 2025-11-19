@@ -1,4 +1,4 @@
-🏰 Atlas Host OS initialized
+🏰 Atla Host OS initialized
 📍 Port 5000 | MongoDB connected  
 🛡️ JWT Auth Active | REST API Live
 
